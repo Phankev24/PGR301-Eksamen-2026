@@ -37,3 +37,43 @@ I min pipeline har jeg valgt en kombinert tagging-strategi som pusher med både 
 
 **Lenke til vellykket workflow-kjøring:**
 https://github.com/Phankev24/PGR301-Eksamen-2026/actions/runs/41540353639/job/125605785656
+ 
+ ---
+
+ ## Oppgave 2: ECS Express med Terraform (25p)
+
+ ### 2A: Infrastruktur for tjenesten
+
+**Offentlig URL til tjenesten:** https://wi-97007aeba8eb418bb591ff07be39cddf.ecs.eu-west-1.on.aws
+
+**Eksempel på testkommando (curl):** 
+curl -F "image=@samples/sample_image.png" https://wi-97007aeba8eb418bb591ff07be39cddf.ecs.eu-west-1.on.aws/api/analyze
+
+
+### All Terraform-kode for infrastrukturen ligger i mappen infra/. Løsningen oppretter følgende komponenter:
+
+**S3 Bucket (wishifai-images-k28):**
+
+* Opprettet S3-bucket for lagring av bilder lastet opp til applikasjonen. Bucketen har force_destroy = true for ryddig ressurshåndtering, og blokkerer offentlig tilgang direkte via aws_s3_bucket_public_access_block.
+
+**IAM Task Role (wishifai-task-role-k28):**
+
+* Opprettet en dedikert task role for applikasjonen for å sikre "least privilege". Rollen har en inline-policy med tillatelser til:
+
+**S3:** Lese, skrive og liste objekter i wishifai-images-k28.
+
+**AWS Rekognition:** DetectLabels og DetectText for å hente ut objekter fra bilder.
+
+**AWS Bedrock:** InvokeModel for å generere gaveforslag via LLM.
+
+**CloudWatch:** PutMetricData for at Spring Boot (Micrometer) skal få levert metrikker under kjøring.
+
+**ECS Express Service (aws_ecs_express_gateway_service):**
+
+* Tjenesten benytter de eksisterende fellesrollene i AWS-kontoen for execution (ecsTaskExecutionRole) og infrastruktur (ecsInfrastructureRoleForExpressServices), samt den nyopprettede task-rollen.
+
+* Miljøvariabelen S3_BUCKET settes automatisk i Terraform ved å hente navnet fra S3-ressursen (aws_s3_bucket.images.bucket).
+
+* Helsesjekksti er eksplisitt satt til health_check_path = "/actuator/health" slik at ECS Express gjenkjenner at Spring Boot-containeren er frisk og kan rute trafikk til den.
+
+* Variabler benyttes for region, kandidatnummer og Docker-image for fleksibel konfigurasjon.
