@@ -84,3 +84,12 @@ curl -F "image=@samples/sample_image.png" https://wi-97007aeba8eb418bb591ff07be3
 * **Backend Bucket:** pgr301-terraform-state
 * **State Key Path:** Wishifai/k28/terraform.tfstate
 * **Region:** eu-west-1
+
+---
+### 2C: GitHub Actions-job for Terraform
+Pipelinen i `.github/workflows/docker.yml` har to jobber som kjører etter hverandre: `push_to_registry` og `terraform`.
+
+### Hvorfor Terraform må kjøre ETTER container-build:
+1. **Unngå feil ved utrulling:** Hvis Terraform oppdaterer ECS før imaget ligger i ECR, prøver ECS å hente et bilde som ikke finnes ennå, og containeren krasjer.
+2. **Sikre at koden bygger:** Hvis bygget av Docker-imaget feiler, kjører ikke Terraform. Dermed ruller vi ikke ut ødelagte endringer.
+3. **Riktig versjon:** Terraform må vite den nøyaktige Commit SHA-tagen fra bygg-steget for å oppdatere ECS med riktig image.
