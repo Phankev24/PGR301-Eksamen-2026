@@ -37,8 +37,8 @@ I min pipeline har jeg valgt en kombinert tagging-strategi som pusher med både 
 
 **Lenke til vellykket workflow-kjøring:**
 https://github.com/Phankev24/PGR301-Eksamen-2026/actions/runs/41540353639/job/125605785656
- 
- ---
+
+---
 
  ## Oppgave 2: ECS Express med Terraform (25p)
 
@@ -77,3 +77,10 @@ curl -F "image=@samples/sample_image.png" https://wi-97007aeba8eb418bb591ff07be3
 * Helsesjekksti er eksplisitt satt til health_check_path = "/actuator/health" slik at ECS Express gjenkjenner at Spring Boot-containeren er frisk og kan rute trafikk til den.
 
 * Variabler benyttes for region, kandidatnummer og Docker-image for fleksibel konfigurasjon.
+
+---
+### 2B: Remote State
+**Terraform-state er konfigurert til å lagres i en S3 backend i stedenfor lokalt på maskinen.**
+* **Backend Bucket:** pgr301-terraform-state
+* **State Key Path:** Wishifai/k28/terraform.tfstate
+* **Region:** eu-west-1
