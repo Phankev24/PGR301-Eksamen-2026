@@ -1,6 +1,9 @@
 package no.pgr301.exam.service;
 
 import org.springframework.stereotype.Service;
+
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.services.rekognition.RekognitionClient;
 import software.amazon.awssdk.services.rekognition.model.DetectLabelsRequest;
@@ -14,9 +17,11 @@ import java.util.List;
 public class RekognitionService {
 
     private final RekognitionClient client;
+    private final Timer rekognitionTimer;
 
-    public RekognitionService(RekognitionClient client) {
+    public RekognitionService(RekognitionClient client, MeterRegistry registry) {
         this.client = client;
+        this.rekognitionTimer = registry.timer("rekognition.execution.time");
     }
 
     public List<String> detectLabels(byte[] bytes) {

@@ -14,6 +14,9 @@ import java.time.Duration;
 @Configuration
 public class MetricsConfig {
 
+    @Value("${management.metrics.export.cloudwatch.namespace:wishifai-28}")
+    private String namespace;
+
     @Bean
     public CloudWatchAsyncClient cloudWatchAsyncClient(@Value("${aws.region}") String region) {
         return CloudWatchAsyncClient.builder().region(Region.of(region)).build();
@@ -29,7 +32,7 @@ public class MetricsConfig {
 
             @Override
             public String namespace() {
-                return "";
+                return namespace;
             }
 
             @Override

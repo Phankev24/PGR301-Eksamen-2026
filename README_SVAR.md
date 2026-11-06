@@ -93,3 +93,25 @@ Pipelinen i `.github/workflows/docker.yml` har to jobber som kjører etter hvera
 1. **Unngå feil ved utrulling:** Hvis Terraform oppdaterer ECS før imaget ligger i ECR, prøver ECS å hente et bilde som ikke finnes ennå, og containeren krasjer.
 2. **Sikre at koden bygger:** Hvis bygget av Docker-imaget feiler, kjører ikke Terraform. Dermed ruller vi ikke ut ødelagte endringer.
 3. **Riktig versjon:** Terraform må vite den nøyaktige Commit SHA-tagen fra bygg-steget for å oppdatere ECS med riktig image.
+
+
+
+## Oppgave 3: Observability (20p)
+
+### 3A: Metrikker i applikasjonen
+
+For å finne ut hvorfor applikasjonen svarer tregt og se hvordan den brukes, har vi lagt inn metrikker med Micrometer. Disse sendes automatisk til AWS CloudWatch under navnerommet `wishifai-28`.
+
+Vi har valgt å måle følgende:
+
+1. **`rekognition.execution.time` (Timer)**
+   - **Hva den gjør:** Måler hvor mange sekunder AWS Rekognition bruker på å finne objekter i bildet.
+   - **Hvorfor:** Siden dette er et eksternt kall, vil vi se om det er bildegjenkjenningen som gjør at brukerne må vente. En `Timer` gir oss både gjennomsnittstid og toppene (p95/p99).
+
+2. **`bedrock.execution.time` (Timer)**
+   - **Hva den gjør:** Måler hvor lang tid AWS Bedrock (Claude LLM) bruker på å generere gaveforslagene.
+   - **Hvorfor:** AI-modeller bruker ofte lang tid på å svare. Metrikken bekrefter om det er Bedrock som er hovedårsaken til tregheten (i testene våre tok dette ca. 15,6 sekunder).
+
+3. **`wishifai.images.analyzed` (Counter — Business-metrikk)**
+   - **Hva den gjør:** Teller totalt antall bilder som har blitt sendt inn og analysert.
+   - **Hvorfor:** Dette viser den faktiske bruken av tjenesten over tid. Det gir nyttig innsikt for investorer og driftsteamet om hvor populær appen er, helt uavhengig av tekniske feil.

@@ -1,6 +1,9 @@
 package no.pgr301.exam.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import no.pgr301.exam.model.GiftAnalysis;
 import no.pgr301.exam.model.GiftSuggestion;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,11 +27,14 @@ public class BedrockService {
 
     private final BedrockRuntimeClient client;
     private final String modelId;
+    private final Timer bedrockTimer;
 
     public BedrockService(BedrockRuntimeClient client,
-                          @Value("${app.bedrock.model-id}") String modelId) {
+                          @Value("${app.bedrock.model-id}") String modelId,
+                          MeterRegistry registry) {
         this.client = client;
         this.modelId = modelId;
+        this.bedrockTimer = registry.timer("bedrock.execution.time");
     }
 
     /**
@@ -38,7 +44,8 @@ public class BedrockService {
      * @return
      */
     public GiftAnalysis suggestGifts(List<String> labels) {
-        String prompt = """
+        return bedrockTimer.record(() ->{
+            String prompt = """
                 Du er en gaveassistent. Du får en liste med objekter som Rekognition
                 oppdaget i et bilde av et rom eller en gjenstand. Oppgaven din er å
                 foreslå gaver som passer for personen som eier rommet.
@@ -96,6 +103,8 @@ public class BedrockService {
 
         String text = resp.output().message().content().get(0).text();
         return parseAnalysis(text);
+        });
+        
     }
 
     private GiftAnalysis parseAnalysis(String text) {
