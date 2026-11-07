@@ -7,3 +7,13 @@ output "s3_bucket_name" {
   description = "Navnet på opprettet S3 bucket"
   value       = aws_s3_bucket.images.bucket
 }
+
+output "dashboard_name" {
+  description = "Navnet på CloudWatch Dashboard"
+  value       = aws_cloudwatch_dashboard.wishifai_dashboard.dashboard_name
+}
+
+output "alarm_name" {
+  description = "Navnet på CloudWatch Alarm"
+  value       = aws_cloudwatch_metric_alarm.bedrock_latency_alarm.alarm_name
+}
