@@ -1,4 +1,4 @@
-resource "aws_cloudwatch_metric_alarm" "bedrock_latency_alarm"{
+resource "aws_cloudwatch_metric_alarm" "bedrock_latency_alarm" {
     alarm_name          = "wishifai-bedrock-high-latency-k${var.candidate_no}"
     comparison_operator = "GreaterThanThreshold"
     evaluation_periods  = 1
