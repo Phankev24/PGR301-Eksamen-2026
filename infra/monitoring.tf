@@ -1,17 +1,18 @@
 resource "aws_cloudwatch_metric_alarm" "bedrock_latency_alarm" {
-    alarm_name          = "wishifai-bedrock-high-latency-k${var.candidate_no}"
-    comparison_operator = "GreaterThanThreshold"
-    evaluation_periods  = 1
-    metric_name         = "bedrock.execution.time.max"
-    namespace           = "wishifai-${var.candidate_no}"
-    period              = 300
-    statistic           = "Maximum"
-    threshold           = 12000 
-    alarm_description   = "Varsler dersom AWS Bedrock (LLM) bruker mer enn 12 sekunder paa aa generere gaveforslag."
-    datapoints_to_alarm = 1
+  alarm_name          = "wishifai-bedrock-high-latency-k${var.candidate_no}"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 1
+  metric_name         = "bedrock.execution.time.max"
+  namespace           = "wishifai-${var.candidate_no}"
+  period              = 300
+  statistic           = "Maximum"
+  threshold           = 12000
+  alarm_description   = "Varsler dersom AWS Bedrock (LLM) bruker mer enn 12 sekunder paa aa generere gaveforslag."
+  datapoints_to_alarm = 1
 
   treat_missing_data = "notBreaching"
 }
+
 
 
 resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
@@ -30,9 +31,9 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
           metrics = [
             ["wishifai-${var.candidate_no}", "wishifai.images.analyzed.count", { "stat" = "Sum", "period" = 60, "label" = "Totalt antall bilder analysert" }]
           ]
-          view    = "singleValue"
-          region  = var.aws_region
-          title   = "Business: Totalt antall analyserte bilder"
+          view   = "singleValue"
+          region = var.aws_region
+          title  = "Business: Totalt antall analyserte bilder"
         }
       },
       {
@@ -52,7 +53,7 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         }
       },
 
-      #(ACTUATOR / MICROMETER)
+      # ACTUATOR / MICROMETER METRIKKER
       {
         type   = "metric"
         x      = 0
