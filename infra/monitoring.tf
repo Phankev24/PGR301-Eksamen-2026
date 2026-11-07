@@ -29,7 +29,7 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         height = 6
         properties = {
           metrics = [
-            ["wishifai-${var.candidate_no}", "wishifai.images.analyzed", { "stat" = "Sum", "period" = 60, "label" = "Totalt antall bilder analysert" }]
+            ["wishifai-${var.candidate_no}", "wishifai.images.analyzed.count", { "stat" = "Sum", "period" = 60, "label" = "Totalt antall bilder analysert" }]
           ]
           view   = "singleValue"
           region = var.aws_region
@@ -44,7 +44,7 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         height = 6
         properties = {
           metrics = [
-            ["wishifai-${var.candidate_no}", "wishifai.images.analyzed", { "stat" = "Sum", "period" = 60 }]
+            ["wishifai-${var.candidate_no}", "wishifai.images.analyzed.count", { "stat" = "Sum", "period" = 60 }]
           ]
           view    = "timeSeries"
           stacked = false
@@ -63,7 +63,7 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         properties = {
           metrics = [
             ["wishifai-${var.candidate_no}", "bedrock.execution.time.max", { "stat" = "Maximum", "period" = 60, "label" = "Bedrock Max Latens (ms)" }],
-            ["wishifai-${var.candidate_no}", "rekognition.execution.time.sum", { "stat" = "Sum", "period" = 60, "label" = "Rekognition Sum Latens (ms)" }]
+            ["wishifai-${var.candidate_no}", "rekognition.execution.time.max", { "stat" = "Maximum", "period" = 60, "label" = "Rekognition Max Latens (ms)" }]
           ]
           view    = "timeSeries"
           stacked = false
@@ -88,12 +88,12 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         height = 6
         properties = {
           metrics = [
-            ["wishifai-${var.candidate_no}", "jvm.memory.committed.value", "area", "heap", "id", "G1 Survivor Space", { "stat" = "Average", "period" = 60, "label" = "JVM Memory Committed" }]
+            ["wishifai-${var.candidate_no}", "jvm.gc.memory.allocated.count", { "stat" = "Sum", "period" = 60, "label" = "JVM GC Memory Allocated Count" }]
           ]
           view    = "timeSeries"
           stacked = false
           region  = var.aws_region
-          title   = "Applikasjon: JVM Minnebruk"
+          title   = "Applikasjon: JVM Minneallokering"
         }
       },
 
@@ -106,8 +106,8 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         height = 6
         properties = {
           metrics = [
-            ["AWS/ECS", "CPUUtilization", "ServiceName", aws_ecs_express_gateway_service.wishifai.service_name, { "stat" = "Average", "period" = 60 }],
-            ["AWS/ECS", "MemoryUtilization", "ServiceName", aws_ecs_express_gateway_service.wishifai.service_name, { "stat" = "Average", "period" = 60 }]
+            ["AWS/ECS", "CPUUtilization", "ServiceName", "wishifai-service-k${var.candidate_no}", "ClusterName", "ecs-express-cluster", { "stat" = "Average", "period" = 60 }],
+            ["AWS/ECS", "MemoryUtilization", "ServiceName", "wishifai-service-k${var.candidate_no}", "ClusterName", "ecs-express-cluster", { "stat" = "Average", "period" = 60 }]
           ]
           view    = "timeSeries"
           stacked = false
@@ -123,7 +123,7 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         height = 6
         properties = {
           metrics = [
-            ["AWS/ECS", "RunningTaskCount", "ServiceName", aws_ecs_express_gateway_service.wishifai.service_name, { "stat" = "Average", "period" = 60 }]
+            ["AWS/ECS", "RunningTaskCount", "ServiceName", "wishifai-service-k${var.candidate_no}", "ClusterName", "ecs-express-cluster", { "stat" = "Average", "period" = 60 }]
           ]
           view    = "timeSeries"
           stacked = false
