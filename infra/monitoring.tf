@@ -14,7 +14,6 @@ resource "aws_cloudwatch_metric_alarm" "bedrock_latency_alarm" {
 }
 
 
-
 resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
   dashboard_name = "wishifai-dashboard-${var.candidate_no}"
 
@@ -29,7 +28,7 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         height = 6
         properties = {
           metrics = [
-            ["wishifai-${var.candidate_no}", "wishifai.images.analyzed.count", { "stat" = "Sum", "period" = 60, "label" = "Totalt antall bilder analysert" }]
+            ["wishifai-${var.candidate_no}", "wishifai.images.analyzed", { "stat" = "Sum", "label" = "Totalt antall bilder analysert" }]
           ]
           view   = "singleValue"
           region = var.aws_region
@@ -44,7 +43,7 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         height = 6
         properties = {
           metrics = [
-            ["wishifai-${var.candidate_no}", "wishifai.images.analyzed.count", { "stat" = "Sum", "period" = 60 }]
+            ["wishifai-${var.candidate_no}", "wishifai.images.analyzed", { "stat" = "Sum" }]
           ]
           view    = "timeSeries"
           stacked = false
@@ -53,7 +52,7 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         }
       },
 
-      # ACTUATOR / MICROMETER METRIKKER
+      #APPLIKASJONSMETRIKKER 
       {
         type   = "metric"
         x      = 0
@@ -62,8 +61,8 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         height = 6
         properties = {
           metrics = [
-            ["wishifai-${var.candidate_no}", "bedrock.execution.time.max", { "stat" = "Maximum", "period" = 60, "label" = "Bedrock Max Latens (ms)" }],
-            ["wishifai-${var.candidate_no}", "rekognition.execution.time.max", { "stat" = "Maximum", "period" = 60, "label" = "Rekognition Max Latens (ms)" }]
+            ["wishifai-${var.candidate_no}", "bedrock.execution.time.max", { "stat" = "Maximum", "label" = "Bedrock Max Latens (ms)" }],
+            ["wishifai-${var.candidate_no}", "rekognition.execution.time.max", { "stat" = "Maximum", "label" = "Rekognition Max Latens (ms)" }]
           ]
           view    = "timeSeries"
           stacked = false
@@ -88,7 +87,7 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         height = 6
         properties = {
           metrics = [
-            ["wishifai-${var.candidate_no}", "jvm.gc.memory.allocated.count", { "stat" = "Sum", "period" = 60, "label" = "JVM GC Memory Allocated Count" }]
+            ["wishifai-${var.candidate_no}", "jvm.gc.memory.allocated.count", { "stat" = "Sum", "label" = "JVM Memory Allocated Count" }]
           ]
           view    = "timeSeries"
           stacked = false
@@ -97,7 +96,7 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         }
       },
 
-      # INFRASTRUKTUR-METRIKKER (ECS EXPRESS)
+      # INFRASTRUKTUR-METRIKKER (ECS EXPRESS) 
       {
         type   = "metric"
         x      = 0
@@ -106,8 +105,8 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         height = 6
         properties = {
           metrics = [
-            ["AWS/ECS", "CPUUtilization", "ServiceName", "wishifai-service-k${var.candidate_no}", "ClusterName", "ecs-express-cluster", { "stat" = "Average", "period" = 60 }],
-            ["AWS/ECS", "MemoryUtilization", "ServiceName", "wishifai-service-k${var.candidate_no}", "ClusterName", "ecs-express-cluster", { "stat" = "Average", "period" = 60 }]
+            ["AWS/ECS", "CPUUtilization", "ServiceName", "wishifai-service-k${var.candidate_no}", { "stat" = "Average" }],
+            ["AWS/ECS", "MemoryUtilization", "ServiceName", "wishifai-service-k${var.candidate_no}", { "stat" = "Average" }]
           ]
           view    = "timeSeries"
           stacked = false
@@ -123,7 +122,7 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         height = 6
         properties = {
           metrics = [
-            ["AWS/ECS", "RunningTaskCount", "ServiceName", "wishifai-service-k${var.candidate_no}", "ClusterName", "ecs-express-cluster", { "stat" = "Average", "period" = 60 }]
+            ["AWS/ECS", "RunningTaskCount", "ServiceName", "wishifai-service-k${var.candidate_no}", { "stat" = "Average" }]
           ]
           view    = "timeSeries"
           stacked = false
