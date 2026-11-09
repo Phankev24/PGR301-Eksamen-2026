@@ -37,6 +37,7 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
           view   = "singleValue"
           region = var.aws_region
           title  = "Business: Totalt antall analyserte bilder"
+          period = 300
         }
       },
       {
@@ -56,7 +57,7 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         }
       },
 
-      # APPLIKASJONSMETRIKKER
+      # APPLIKASJONSMETRIKKER (LATENS)
       {
         type   = "metric"
         x      = 0
@@ -100,7 +101,7 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         }
       },
 
-      # INFRASTRUKTUR-METRIKKER (ECS EXPRESS)
+      #INFRASTRUKTUR-METRIKKER (ECS EXPRESS)
       {
         type   = "metric"
         x      = 0
