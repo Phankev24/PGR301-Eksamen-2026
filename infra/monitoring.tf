@@ -34,10 +34,10 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
           metrics = [
             ["wishifai-${var.candidate_no}", "wishifai.images.analyzed.count", { "stat" = "Sum", "label" = "Totalt antall bilder analysert" }]
           ]
-          view   = "singleValue"
-          region = var.aws_region
-          title  = "Business: Totalt antall analyserte bilder"
-          period = 300
+          view                 = "singleValue"
+          region               = var.aws_region
+          title                = "Business: Totalt antall analyserte bilder"
+          setPeriodToTimeRange = true
         }
       },
       {
@@ -57,7 +57,7 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         }
       },
 
-      # APPLIKASJONSMETRIKKER (LATENS)
+      # APPLIKASJONSMETRIKKER (LATENS) 
       {
         type   = "metric"
         x      = 0
@@ -101,12 +101,12 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         }
       },
 
-      #INFRASTRUKTUR-METRIKKER (ECS EXPRESS)
+      # INFRASTRUKTUR-METRIKKER (ECS EXPRESS)
       {
         type   = "metric"
         x      = 0
         y      = 12
-        width  = 12
+        width  = 24
         height = 6
         properties = {
           metrics = [
@@ -117,22 +117,6 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
           stacked = false
           region  = var.aws_region
           title   = "Infrastruktur: ECS Express CPU & Minne utnyttelse (%)"
-        }
-      },
-      {
-        type   = "metric"
-        x      = 12
-        y      = 12
-        width  = 12
-        height = 6
-        properties = {
-          metrics = [
-            [{ "expression" = "SEARCH('{AWS/ECS,ClusterName,ServiceName} MetricName=\"RunningTaskCount\" ServiceName=\"wishifai-service-k${var.candidate_no}\"', 'Average', 60)", "id" = "e4", "label" = "Running Task Count" }]
-          ]
-          view    = "timeSeries"
-          stacked = false
-          region  = var.aws_region
-          title   = "Infrastruktur: ECS Express Running Task Count"
         }
       }
     ]
