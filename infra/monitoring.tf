@@ -12,9 +12,6 @@ resource "aws_cloudwatch_metric_alarm" "bedrock_latency_alarm" {
 
   treat_missing_data = "notBreaching"
 
-  dimensions = {
-    exception = "None"
-  }
 }
 
 
@@ -23,7 +20,7 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
 
   dashboard_body = jsonencode({
     widgets = [
-      # BUSINESS-METRIKKER
+      # BUSINESS-METRIKKER 
       {
         type   = "metric"
         x      = 0
@@ -57,7 +54,7 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         }
       },
 
-      # APPLIKASJONSMETRIKKER (LATENS) 
+      # APPLIKASJONSMETRIKKER (LATENS & JVM)
       {
         type   = "metric"
         x      = 0
@@ -66,8 +63,8 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         height = 6
         properties = {
           metrics = [
-            ["wishifai-${var.candidate_no}", "bedrock.execution.time.max", "exception", "None", { "stat" = "Maximum", "label" = "Bedrock Max Latens (ms)" }],
-            ["wishifai-${var.candidate_no}", "rekognition.execution.time.max", "exception", "None", { "stat" = "Maximum", "label" = "Rekognition Max Latens (ms)" }]
+            ["wishifai-${var.candidate_no}", "bedrock.execution.time.max", { "stat" = "Maximum", "label" = "Bedrock Max Latens (ms)" }],
+            ["wishifai-${var.candidate_no}", "rekognition.execution.time.max", { "stat" = "Maximum", "label" = "Rekognition Max Latens (ms)" }]
           ]
           view    = "timeSeries"
           stacked = false
@@ -92,7 +89,7 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         height = 6
         properties = {
           metrics = [
-            [{ "expression" = "SEARCH('{wishifai-${var.candidate_no},area,id} MetricName=\"jvm.memory.used\"', 'Average', 60)", "id" = "e1", "label" = "JVM Memory Used" }]
+            [{ "expression" = "SEARCH('Namespace=\"wishifai-${var.candidate_no}\" MetricName=\"jvm.memory.used\"', 'Average', 300)", "id" = "e1", "label" = "JVM Minnebruk" }]
           ]
           view    = "timeSeries"
           stacked = false
@@ -110,8 +107,8 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         height = 6
         properties = {
           metrics = [
-            [{ "expression" = "SEARCH('{AWS/ECS,ClusterName,ServiceName} MetricName=\"CPUUtilization\" ServiceName=\"wishifai-service-k${var.candidate_no}\"', 'Average', 60)", "id" = "e2", "label" = "CPU Utilization" }],
-            [{ "expression" = "SEARCH('{AWS/ECS,ClusterName,ServiceName} MetricName=\"MemoryUtilization\" ServiceName=\"wishifai-service-k${var.candidate_no}\"', 'Average', 60)", "id" = "e3", "label" = "Memory Utilization" }]
+            [{ "expression" = "SEARCH('Namespace=\"AWS/ECS\" MetricName=\"CPUUtilization\" ServiceName=\"wishifai-service-k${var.candidate_no}\"', 'Average', 300)", "id" = "e2", "label" = "CPU Utilization" }],
+            [{ "expression" = "SEARCH('Namespace=\"AWS/ECS\" MetricName=\"MemoryUtilization\" ServiceName=\"wishifai-service-k${var.candidate_no}\"', 'Average', 300)", "id" = "e3", "label" = "Memory Utilization" }]
           ]
           view    = "timeSeries"
           stacked = false
