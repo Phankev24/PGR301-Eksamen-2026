@@ -11,7 +11,6 @@ resource "aws_cloudwatch_metric_alarm" "bedrock_latency_alarm" {
   datapoints_to_alarm = 1
 
   treat_missing_data = "notBreaching"
-
 }
 
 
@@ -29,7 +28,7 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         height = 6
         properties = {
           metrics = [
-            ["wishifai-${var.candidate_no}", "wishifai.images.analyzed.count", { "stat" = "Sum", "label" = "Totalt antall bilder analysert" }]
+            [{ "expression" = "SEARCH('Namespace=\"wishifai-${var.candidate_no}\" MetricName=\"wishifai.images.analyzed.count\"', 'Sum', 300)", "id" = "e1", "label" = "Totalt antall bilder analysert" }]
           ]
           view                 = "singleValue"
           region               = var.aws_region
@@ -45,10 +44,10 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         height = 6
         properties = {
           metrics = [
-            ["wishifai-${var.candidate_no}", "wishifai.images.analyzed.count", { "stat" = "Sum" }]
+            [{ "expression" = "SEARCH('Namespace=\"wishifai-${var.candidate_no}\" MetricName=\"wishifai.images.analyzed.count\"', 'Sum', 300)", "id" = "e2", "label" = "Bilder analysert (Sum)" }]
           ]
           view    = "timeSeries"
-          stacked = false
+          stacked = true
           region  = var.aws_region
           title   = "Business: Analyserte bilder over tid"
         }
@@ -63,8 +62,8 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         height = 6
         properties = {
           metrics = [
-            ["wishifai-${var.candidate_no}", "bedrock.execution.time.max", { "stat" = "Maximum", "label" = "Bedrock Max Latens (ms)" }],
-            ["wishifai-${var.candidate_no}", "rekognition.execution.time.max", { "stat" = "Maximum", "label" = "Rekognition Max Latens (ms)" }]
+            ["wishifai-${var.candidate_no}", "bedrock.execution.time.max", { "stat" = "Maximum", "label" = "Bedrock Max Latens (ms)", "period" = 60 }],
+            ["wishifai-${var.candidate_no}", "rekognition.execution.time.max", { "stat" = "Maximum", "label" = "Rekognition Max Latens (ms)", "period" = 60 }]
           ]
           view    = "timeSeries"
           stacked = false
@@ -89,7 +88,7 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         height = 6
         properties = {
           metrics = [
-            [{ "expression" = "SEARCH('Namespace=\"wishifai-${var.candidate_no}\" MetricName=\"jvm.memory.used\"', 'Average', 300)", "id" = "e1", "label" = "JVM Minnebruk" }]
+            [{ "expression" = "SEARCH('Namespace=\"wishifai-${var.candidate_no}\" MetricName=\"jvm.memory.used\"', 'Average', 300)", "id" = "e3", "label" = "JVM Minnebruk" }]
           ]
           view    = "timeSeries"
           stacked = false
@@ -107,8 +106,8 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         height = 6
         properties = {
           metrics = [
-            [{ "expression" = "SEARCH('Namespace=\"AWS/ECS\" MetricName=\"CPUUtilization\" ServiceName=\"wishifai-service-k${var.candidate_no}\"', 'Average', 300)", "id" = "e2", "label" = "CPU Utilization" }],
-            [{ "expression" = "SEARCH('Namespace=\"AWS/ECS\" MetricName=\"MemoryUtilization\" ServiceName=\"wishifai-service-k${var.candidate_no}\"', 'Average', 300)", "id" = "e3", "label" = "Memory Utilization" }]
+            [{ "expression" = "SEARCH('Namespace=\"AWS/ECS\" MetricName=\"CPUUtilization\" ServiceName=\"wishifai-service-k${var.candidate_no}\"', 'Average', 300)", "id" = "e4", "label" = "CPU Utilization" }],
+            [{ "expression" = "SEARCH('Namespace=\"AWS/ECS\" MetricName=\"MemoryUtilization\" ServiceName=\"wishifai-service-k${var.candidate_no}\"', 'Average', 300)", "id" = "e5", "label" = "Memory Utilization" }]
           ]
           view    = "timeSeries"
           stacked = false
