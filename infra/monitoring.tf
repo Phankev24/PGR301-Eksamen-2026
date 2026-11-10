@@ -19,7 +19,7 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
 
   dashboard_body = jsonencode({
     widgets = [
-      # BUSINESS-METRIKKER 
+      # BUSINESS-METRIKKER
       {
         type   = "metric"
         x      = 0
@@ -28,7 +28,7 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         height = 6
         properties = {
           metrics = [
-            [{ "expression" = "SEARCH('Namespace=\"wishifai-${var.candidate_no}\" MetricName=\"wishifai.images.analyzed.count\"', 'Sum', 300)", "id" = "e1", "label" = "Totalt antall bilder analysert" }]
+            ["wishifai-${var.candidate_no}", "wishifai.images.analyzed.count", { "stat" = "Sum", "label" = "Totalt antall bilder analysert" }]
           ]
           view                 = "singleValue"
           region               = var.aws_region
@@ -44,10 +44,10 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         height = 6
         properties = {
           metrics = [
-            [{ "expression" = "SEARCH('Namespace=\"wishifai-${var.candidate_no}\" MetricName=\"wishifai.images.analyzed.count\"', 'Sum', 300)", "id" = "e2", "label" = "Bilder analysert (Sum)" }]
+            ["wishifai-${var.candidate_no}", "wishifai.images.analyzed.count", { "stat" = "Sum", "label" = "Bilder analysert", "period" = 60 }]
           ]
-          view    = "timeSeries"
-          stacked = true
+          view    = "bar"
+          stacked = false
           region  = var.aws_region
           title   = "Business: Analyserte bilder over tid"
         }
@@ -88,7 +88,7 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         height = 6
         properties = {
           metrics = [
-            [{ "expression" = "SEARCH('Namespace=\"wishifai-${var.candidate_no}\" MetricName=\"jvm.memory.used\"', 'Average', 300)", "id" = "e3", "label" = "JVM Minnebruk" }]
+            [{ "expression" = "SUM(SEARCH('Namespace=\"wishifai-${var.candidate_no}\" MetricName=\"jvm.memory.used\" area=\"heap\"', 'Average', 60))", "id" = "e3", "label" = "JVM heap brukt (bytes)" }]
           ]
           view    = "timeSeries"
           stacked = false
