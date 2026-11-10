@@ -27,6 +27,9 @@ public class MetricsConfig {
         return new CloudWatchConfig() {
             @Override
             public String get(String key) {
+                if ("cloudwatch.namespace".equals(key)) {
+                    return namespace;
+                }
                 return null;
             }
 
