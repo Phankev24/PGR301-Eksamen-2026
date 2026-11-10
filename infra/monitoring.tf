@@ -28,7 +28,7 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         height = 6
         properties = {
           metrics = [
-            ["wishifai-${var.candidate_no}", "wishifai.images.analyzed.count", { "stat" = "Sum", "label" = "Totalt antall bilder analysert" }]
+            [{ "expression" = "SUM(SEARCH('Namespace=\"wishifai-${var.candidate_no}\" MetricName=\"wishifai.images.analyzed.count\"', 'Sum', 60))", "id" = "e1", "label" = "Totalt antall bilder analysert" }]
           ]
           view                 = "singleValue"
           region               = var.aws_region
@@ -44,7 +44,7 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         height = 6
         properties = {
           metrics = [
-            ["wishifai-${var.candidate_no}", "wishifai.images.analyzed.count", { "stat" = "Sum", "label" = "Bilder analysert", "period" = 60 }]
+            [{ "expression" = "SUM(SEARCH('Namespace=\"wishifai-${var.candidate_no}\" MetricName=\"wishifai.images.analyzed.count\"', 'Sum', 60))", "id" = "e2", "label" = "Bilder analysert" }]
           ]
           view    = "bar"
           stacked = false
