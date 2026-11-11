@@ -46,7 +46,7 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
           metrics = [
             [{ "expression" = "SUM(SEARCH('Namespace=\"wishifai-${var.candidate_no}\" MetricName=\"wishifai.images.analyzed.count\"', 'Sum', 60))", "id" = "e2", "label" = "Bilder analysert" }]
           ]
-          view    = "bar"
+          view    = "timeSeries"
           stacked = false
           region  = var.aws_region
           title   = "Business: Analyserte bilder over tid"
@@ -88,7 +88,7 @@ resource "aws_cloudwatch_dashboard" "wishifai_dashboard" {
         height = 6
         properties = {
           metrics = [
-            [{ "expression" = "SUM(SEARCH('Namespace=\"wishifai-${var.candidate_no}\" MetricName=\"jvm.memory.used\" area=\"heap\"', 'Average', 60))", "id" = "e3", "label" = "JVM heap brukt (bytes)" }]
+            [{ "expression" = "SUM(SEARCH('{wishifai-${var.candidate_no},area,id} MetricName=\"jvm.memory.used.value\" area=\"heap\"', 'Average', 60))", "id" = "e3", "label" = "JVM heap brukt (bytes)" }]
           ]
           view    = "timeSeries"
           stacked = false
