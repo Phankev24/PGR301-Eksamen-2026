@@ -17,3 +17,8 @@ output "alarm_name" {
   description = "Navnet på CloudWatch Alarm"
   value       = aws_cloudwatch_metric_alarm.bedrock_latency_alarm.alarm_name
 }
+
+output "service_url" {
+  description = "Offentlig URL til Wishifai-tjenesten"
+  value       = aws_ecs_express_gateway_service.wishifai.ingress_paths[0].endpoint
+}
