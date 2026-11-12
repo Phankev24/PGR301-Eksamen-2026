@@ -55,4 +55,5 @@ jobs:
           cd infra
           terraform fmt -check
           terraform init
+          terraform plan -var="image_tag=${{ needs.push_to_registry.outputs.image_tag }}"
           terraform apply -auto-approve -var="image_tag=${{ needs.push_to_registry.outputs.image_tag }}"
